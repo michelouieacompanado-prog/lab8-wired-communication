@@ -51,11 +51,21 @@ Avoided on purpose: GPIO 0, 2, 5, 12, 15 (strapping), GPIO 6–11 (onboard flash
 
 ![Labeled wiring diagram](images/wiring_diagram.svg)
 
-### Labeled photo of my build
+### Labeled photos of my build
 
-![Labeled photo of my circuit](images/wiring.jpg)
+**UART loopback:** GPIO17 (TX) → GPIO16 (RX)
 
-In the photo, every wire is labeled with its GPIO number and signal name: the UART jumper (GPIO17 TX to GPIO16 RX), the SPI jumper (GPIO13 MOSI to GPIO26 MISO), and the OLED wires (SDA to GPIO32, SCK/SCL to GPIO33, VDD to 3V3, GND to GND).
+![UART circuit](images/wiring_uart.png)
+
+**I²C module (OLED):** SDA → GPIO32, SCK (SCL) → GPIO33, VDD → 3V3, GND → GND
+
+![I2C circuit](images/wiring_i2c.png)
+
+**SPI loopback:** GPIO13 (MOSI) → GPIO26 (MISO)
+
+![SPI circuit](images/wiring_spi.png)
+
+Each photo is labeled with the GPIO number and signal name of every wire.
 
 ---
 
