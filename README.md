@@ -57,7 +57,7 @@ Avoided on purpose: GPIO 0, 2, 5, 12, 15 (strapping), GPIO 6–11 (onboard flash
 
 ![UART circuit](images/wiring_uart.png)
 
-**I²C module (OLED):** SDA → GPIO32, SCK (SCL) → GPIO33, VDD → 3V3, GND → GND
+**I²C module (OLED):** SDA → GPIO32, SCK (SCL) → GPIO33, VCC → 3V3, GND → GND
 
 ![I2C circuit](images/wiring_i2c.png)
 
@@ -101,15 +101,16 @@ Predictions were written before running each test.
 `Serial2` still transmits on GPIO17, but nothing reaches GPIO16, so no bytes are ever received and nothing is printed. This confirms the earlier `PING` lines really travelled through the jumper wire and were not generated inside the program.
 
 ### I²C with module
-```
-(paste output here)
-```
+
+<img width="1366" height="768" alt="i2c_scanner - wired" src="https://github.com/user-attachments/assets/a479c903-9bc3-4e3b-a497-8e72f29e59e1" />
+
 The scanner tries every address from 0x01 to 0x7E. A device that is present pulls SDA low during the acknowledge bit, and `endTransmission()` then returns 0. Address `0x3C` (60 in decimal) is the usual address of an SSD1306 OLED. Only one address replied, so there is one device on the bus, and the wiring (SDA on GPIO32, SCL on GPIO33, power on 3V3) is correct.
 
 ### I²C without module
-```
-(paste output here)
-```
+
+<img width="1366" height="768" alt="i2c_scanner - NOTwired" src="https://github.com/user-attachments/assets/baf08c99-1b30-4d11-8f7c-11d127c7d685" />
+
+
 With the module removed, no device acknowledges any address, so `endTransmission()` never returns 0, the counter stays at zero, and the sketch prints `No I2C devices found`. This is the expected "nothing connected" result.
 
 ### SPI with jumper
