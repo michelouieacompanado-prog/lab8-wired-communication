@@ -79,15 +79,15 @@ Predictions were written before running each test.
 ## 4. Serial Monitor output and what it shows (115200 baud unless stated)
 
 ### UART with jumper
-```
+
 <img width="1366" height="768" alt="uart_loopback - wired" src="https://github.com/user-attachments/assets/1f718c87-f2cc-4705-9cd9-5dbb74c62880" />
-```
+
 `Serial2` sends `PING` plus a line break at 9600 baud from TX (GPIO17) every second. The jumper feeds that signal straight into RX (GPIO16), so `Serial2.available()` becomes non-zero and the sketch copies every received byte to the USB serial port (115200 baud), where the monitor shows it. Two UARTs are in use here: `Serial2` (9600 baud, between the two pins) and `Serial` (115200 baud, to the computer). The output proves the board can both transmit and receive.
 
 ### UART without jumper
-```
+
 <img width="1366" height="768" alt="uart_loopback - NOTwired" src="https://github.com/user-attachments/assets/e23d2a06-77f9-45c0-b74f-dfba3833f27c" />
-```
+
 `Serial2` still transmits on GPIO17, but nothing reaches GPIO16, so no bytes are ever received and nothing is printed. This confirms the earlier `PING` lines really travelled through the jumper wire and were not generated inside the program.
 
 ### I²C with module
@@ -103,27 +103,27 @@ The scanner tries every address from 0x01 to 0x7E. A device that is present pull
 With the module removed, no device acknowledges any address, so `endTransmission()` never returns 0, the counter stays at zero, and the sketch prints `No I2C devices found`. This is the expected "nothing connected" result.
 
 ### SPI with jumper
-```
+
 <img width="1366" height="768" alt="spi_loopback - wired" src="https://github.com/user-attachments/assets/cba82e5e-c686-468c-b95a-e71c21aaf8da" />
-```
+
 With CS pulled LOW, `SPI.transfer(0xA5)` shifts the byte out on MOSI (GPIO13), most-significant bit first, while SCK clocks eight pulses at 1 MHz. Because MOSI is wired to MISO (GPIO26), the same bits come straight back in during the same eight clocks, so the received byte is `0xA5` (binary `10100101`). Sent equals received, which shows SPI is full duplex.
 
 ### SPI without jumper
-```
+
 <img width="1366" height="768" alt="spi_loopback - NOTwired" src="https://github.com/user-attachments/assets/1e400131-df9d-470f-b4ae-636fe7da730f" />
-```
+
 With the jumper removed, MISO (GPIO26) is not driven by anything and floats. The input then reads as all ones or as noise, which is why `0xFF` (or another unexpected value) shows up instead of `0xA5`. A value that matches only when the jumper is present confirms the loopback is real.
 
 ### Baud-rate mismatch (sketch `Serial.begin(9600)`, monitor 115200)
-```
+
 <img width="1366" height="768" alt="uart_loopback - sketch(115200) baud(9600)" src="https://github.com/user-attachments/assets/9a090fe4-9d69-46c1-8b6b-b54397559890" />
-```
+
 The sketch now sends to the computer at 9600 baud, but the monitor listens at 115200, which is 12 times faster. The monitor samples each bit at the wrong moments and reads wrong values, so the text turns into garbage characters.
 
 ### Baud rate matched (sketch 9600, monitor 9600)
-```
+
 <img width="1363" height="765" alt="uart_loopback - sketch(9600) baud(9600)" src="https://github.com/user-attachments/assets/676641c3-66e5-4efb-bcb1-2b82e8e9aab4" />
-```
+
 Once both sides use 9600 baud, they agree on how long each bit lasts and `PING` is readable again. This demonstrates the answer to Question 1 below.
 
 Sketch 1 was restored to `Serial.begin(115200)` afterwards.
